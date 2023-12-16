@@ -101,6 +101,13 @@ function checkNewEntry() {
     contentType: false,
     processData: false,
   }).done(function (data) {
+    if(data == 5){
+    Swal.fire({
+            icon: "warning",
+            title: "No Capacity",
+            text: 'Sorry but our parking capacity is full',
+          })
+    }
     resultCode = data.result_code;
     carReg = data.car_reg;
 
@@ -110,12 +117,14 @@ function checkNewEntry() {
         icon: "success",
         title: "Welcome",
         text: 'Open the barrier for "' + carReg + '"',
-      });
+      }).then((result) => {
+        location.reload(true)
+        })
     }
     if (resultCode == 2) {
       Swal.fire({
         icon: "warning",
-        title: "Invlaid entry",
+        title: "Invalid entry",
         text: 'Car with "' + carReg + '" is already is the parking lot',
       });
     }
@@ -160,7 +169,9 @@ function checkNewExit() {
                 icon: "success",
                 title: "Success",
                 text: "Thank you for using our service. Have a safe journey!\nOpen the barrier!",
-              });
+              }).then((result) => {
+                    location.reload(true)
+                        });
             }
           });
         }

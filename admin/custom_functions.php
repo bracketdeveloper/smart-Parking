@@ -35,6 +35,20 @@ function getAllStaffMembers($conn)
     return $data;
 }
 
+/* get all black lsit cars function*/
+function getAllBlackListCars($conn)
+{
+    $allBlackListCarsQuery = "SELECT * FROM `black_list_cars`";
+    $allBlackListCarsQueryResult = mysqli_query($conn, $allBlackListCarsQuery);
+    $data = array();
+    if (mysqli_num_rows($allBlackListCarsQueryResult) > 0) {
+        while ($row = $allBlackListCarsQueryResult->fetch_assoc()) {
+            $data[] = $row;
+        }
+    }
+    return $data;
+}
+
 /* get admin details by id*/
 function getAdminDetailsByID($conn, $adminID)
 {
@@ -168,6 +182,17 @@ function sendEmail($staffEmail, $staffName, $staffPassword)
     mail($staffEmail, $subject, $body, $headers);
 }
 
+function getTotalParkedCars($conn){
+    $allStaffMembersQuery = "SELECT * FROM `in_data` WHERE `status` = 'parked'";
+    $allStaffMembersQueryResult = mysqli_query($conn, $allStaffMembersQuery);
+    $data = array();
+    if (mysqli_num_rows($allStaffMembersQueryResult) > 0) {
+        while ($row = $allStaffMembersQueryResult->fetch_assoc()) {
+            $data[] = $row;
+        }
+    }
+    return $data;
+}
 function sendPasswordAsEmail($email, $password, $name)
 {
     $subject = "Smart Parking Pro Password Recover.";

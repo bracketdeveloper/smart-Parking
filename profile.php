@@ -56,6 +56,18 @@ require_once "commons/head.php";
                                             Add New Staff
                                         </button>
                                     </li>
+                                    <li class="nav-item">
+                                        <button class="nav-link" data-bs-toggle="tab"
+                                                data-bs-target="#parking-capacity">
+                                            Edit Parking Capacity
+                                        </button>
+                                    </li>
+                                    <li class="nav-item">
+                                        <button class="nav-link" data-bs-toggle="tab"
+                                                data-bs-target="#add-black-list-car">
+                                            Add Black List Car
+                                        </button>
+                                    </li>
                                 <?php
                                 endif;
                                 ?>
@@ -143,26 +155,71 @@ require_once "commons/head.php";
                                     <h5 class="card-title">Add New Staff Details</h5>
                                     <!-- Profile Edit Form -->
 
-                                        <div class="row mb-3">
-                                            <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Full
-                                                Name</label>
-                                            <div class="col-md-8 col-lg-9">
-                                                <input type="text" class="form-control" id="new-staff-name">
-                                            </div>
+                                    <div class="row mb-3">
+                                        <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Full
+                                            Name</label>
+                                        <div class="col-md-8 col-lg-9">
+                                            <input type="text" class="form-control" id="new-staff-name">
                                         </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Email</label>
+                                        <div class="col-md-8 col-lg-9">
+                                            <input type="text" class="form-control" id="new-staff-email">
+                                        </div>
+                                    </div>
+
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-primary"
+                                                onclick="return validateNewStaff()"
+                                                id="btn-add-new-staff">Add Staff
+                                        </button>
+                                    </div>
+
+                                </div>
+
+                                <div class="tab-pane fade profile-edit pt-3" id="parking-capacity">
+                                    <h5 class="card-title">Parking Capacity Details</h5>
+                                    <form>
+
                                         <div class="row mb-3">
-                                            <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Email</label>
+                                            <label for="Total Capacity" class="col-md-4 col-lg-3 col-form-label">Total
+                                                Capacity</label>
                                             <div class="col-md-8 col-lg-9">
-                                                <input type="text" class="form-control" id="new-staff-email">
+                                                <input type="number" class="form-control" id="edit-parking-capacity"
+                                                       value="<?php echo $totalCapacity; ?>">
                                             </div>
                                         </div>
 
                                         <div class="text-center">
                                             <button type="submit" class="btn btn-primary"
-                                                    onclick="return validateNewStaff()"
-                                                    id="btn-add-new-staff">Add Staff
+                                                    onclick="return validateEditParkingCapacity()"
+                                                    id="btn-edit-parking-capacity">Save Changes
                                             </button>
                                         </div>
+                                    </form><!-- End Profile Edit Form -->
+
+                                </div>
+
+                                <div class="tab-pane fade profile-edit pt-3" id="add-black-list-car">
+                                    <h5 class="card-title">Add Black List Car</h5>
+                                    <form>
+
+                                        <div class="row mb-3">
+                                            <label for="Total Capacity" class="col-md-4 col-lg-3 col-form-label">Add
+                                                Black List Car</label>
+                                            <div class="col-md-8 col-lg-9">
+                                                <input type="text" class="form-control" id="black-list-car">
+                                            </div>
+                                        </div>
+
+                                        <div class="text-center">
+                                            <button type="submit" class="btn btn-primary"
+                                                    onclick="return validateAddBlackListCar()"
+                                                    id="btn-add-black-list-car">Add
+                                            </button>
+                                        </div>
+                                    </form><!-- End Profile Edit Form -->
 
                                 </div>
 

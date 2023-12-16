@@ -18,6 +18,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'login') {
             $_SESSION["admin_email"] = $row['admin_email'];
             $_SESSION["admin_name"] = $row['admin_name'];
             $_SESSION["admin_id"] = $row['admin_id'];
+            $_SESSION["parking_capacity"] = $row['parking_capacity'];
             $_SESSION["user_type"] = "admin";
             /* login successful code is 1*/
             echo "1";
@@ -49,71 +50,46 @@ if (isset($_GET['action']) && $_GET['action'] == 'login') {
 
 if (isset($_GET['action']) && $_GET['action'] == 'check_new_entry') {
 
-    $fileLocation = '../in.csv';
-    $data = []; // Create an empty array to store the CSV data
+    $leftCapacity = $_SESSION['parking_capacity'] - sizeof(getTotalParkedCars($conn));
 
-    if (($handle = fopen($fileLocation, 'r')) !== false) {
-        while (($row = fgetcsv($handle, 0, ',')) !== false) {
-            // $row is an array containing the CSV fields
-            $data[] = $row; // Add the row to the data array
-        }
-        fclose($handle); // Close the CSV file
-    }
-    $uniqueData = [];
 
-    // Loop through the original array
-    foreach ($data as $row) {
-        // Serialize each row to create a unique string representation
-        $rowStr = serialize($row);
+        $fileLocation = '../in.csv';
+        $data = []; // Create an empty array to store the CSV data
 
-        // Use the serialized row as the key in the associative array
-        // This will automatically remove duplicates
-        $uniqueData[$rowStr] = $row;
-    }
-
-    $totalDataInFile = sizeof($uniqueData) - 1;
-    $sql = "SELECT COUNT(*) as total_rows FROM in_data";
-    $result = $conn->query($sql);
-
-    if ($result) {
-        $row = $result->fetch_assoc();
-        $totalDataInDB = $row['total_rows'];
-    } else {
-        echo "Error: " . $conn->error;
-    }
-    $timeStamp = [];
-    $carReg = [];
-
-    if ($totalDataInFile > $totalDataInDB) {
-        for ($j = 1; $j < sizeof($data); $j++) {
-            if (strlen($data[$j][0]) < 11) {
-                continue;
+        if (($handle = fopen($fileLocation, 'r')) !== false) {
+            while (($row = fgetcsv($handle, 0, ',')) !== false) {
+                // $row is an array containing the CSV fields
+                $data[] = $row; // Add the row to the data array
             }
-            $timeStamp[] = substr($data[$j][0], 0, 19);
-            $carReg[] = $data[$j][1];
+            fclose($handle); // Close the CSV file
+        }
+        $uniqueData = [];
+
+        // Loop through the original array
+        foreach ($data as $row) {
+            // Serialize each row to create a unique string representation
+            $rowStr = serialize($row);
+
+            // Use the serialized row as the key in the associative array
+            // This will automatically remove duplicates
+            $uniqueData[$rowStr] = $row;
         }
 
-        for ($k = $totalDataInDB; $k < sizeof($timeStamp); $k++) {
+        $totalDataInFile = sizeof($uniqueData) - 1;
+        $sql = "SELECT COUNT(*) as total_rows FROM in_data";
+        $result = $conn->query($sql);
 
-            if (checkCarExistance($conn, $carReg[$k]) == 1) :
-                insertCarDetailsInDB($conn, $carReg[$k], $timeStamp[$k]);
-                $result = array(
-                    "result_code" => "1", //Open The Barrier
-                    "car_reg" => $carReg[$k]
-                );
-                $result = json_encode($result);
-                // Set the response content type
-                header('Content-Type: application/json');
-                echo ($result);
-            else :
-                $result = array(
-                    "result_code" => "2",
-                    "car_reg" => $carReg[$k]
-                );
-                $result = json_encode($result);
-                // Set the response content type
-                header('Content-Type: application/json');
-                echo ($result);
+        if ($result) {
+            $row = $result->fetch_assoc();
+            $totalDataInDB = $row['total_rows'];
+        } else {
+            echo "Error: " . $conn->error;
+        }
+        $timeStamp = [];
+        $carReg = [];
+
+        if ($totalDataInFile > $totalDataInDB) {
+            if ($leftCapacity == 0) {
                 $rows = file($fileLocation);
 
                 // Check if the file is empty
@@ -124,9 +100,53 @@ if (isset($_GET['action']) && $_GET['action'] == 'check_new_entry') {
                     // Write the updated data back to the CSV file
                     file_put_contents($fileLocation, implode('', $rows));
                 }
-            endif;
+                echo "5";
+            } else {
+
+
+                for ($j = 1; $j < sizeof($data); $j++) {
+                    if (strlen($data[$j][0]) < 11) {
+                        continue;
+                    }
+                    $timeStamp[] = substr($data[$j][0], 0, 19);
+                    $carReg[] = $data[$j][1];
+                }
+
+                for ($k = $totalDataInDB; $k < sizeof($timeStamp); $k++) {
+
+                    if (checkCarExistance($conn, $carReg[$k]) == 1) :
+                        insertCarDetailsInDB($conn, $carReg[$k], $timeStamp[$k]);
+                        $result = array(
+                            "result_code" => "1", //Open The Barrier
+                            "car_reg" => $carReg[$k]
+                        );
+                        $result = json_encode($result);
+                        // Set the response content type
+                        header('Content-Type: application/json');
+                        echo($result);
+                    else :
+                        $result = array(
+                            "result_code" => "2",
+                            "car_reg" => $carReg[$k]
+                        );
+                        $result = json_encode($result);
+                        // Set the response content type
+                        header('Content-Type: application/json');
+                        echo($result);
+                        $rows = file($fileLocation);
+
+                        // Check if the file is empty
+                        if (count($rows) !== 0) {
+                            // Remove the last record (last line)
+                            array_pop($rows);
+
+                            // Write the updated data back to the CSV file
+                            file_put_contents($fileLocation, implode('', $rows));
+                        }
+                    endif;
+                }
+            }
         }
-    }
 }
 
 if (isset($_GET['action']) && $_GET['action'] == 'check_new_exit') {
@@ -216,7 +236,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'complete_transaction') {
     header('Content-Type: application/json');
 
     insertFareInDB($conn, $carReg, $parkingFare);
-    echo ($result);
+    echo($result);
 }
 
 if (isset($_GET['action']) && $_GET['action'] == 'calculate_fare') {
@@ -347,6 +367,42 @@ if (isset($_GET['action']) && $_GET['action'] == "edit_name") {
             echo "1";
         } else {
             /* update successful code is 2*/
+            echo "2";
+        }
+    }
+}
+
+if (isset($_GET['action']) && $_GET['action'] == "edit_parking_capacity") {
+    $parkingCapacity = mysqli_real_escape_string($conn, $_POST['parking_capacity']);
+
+    $parkingCapacityUpdateQuery = "UPDATE `admin` SET `parking_capacity` = '$parkingCapacity'";
+    $isParkingCapacityEdit = $conn->query($parkingCapacityUpdateQuery) === TRUE;
+
+    if ($isParkingCapacityEdit) {
+        /* update successful code is 1*/
+        $_SESSION['parking_capacity'] = $parkingCapacity;
+        echo "1";
+    } else {
+        /* update successful code is 2*/
+        echo "2";
+    }
+}
+
+if (isset($_GET['action']) && $_GET['action'] == "add_black_list_car") {
+    $blackListCar = mysqli_real_escape_string($conn, $_POST['black_list_car']);
+
+    $checkExistingBlackListCar = "SELECT * FROM `black_list_cars` WHERE `car_reg` = '$blackListCar'";
+    $checkExistingBlackListCarResult = mysqli_query($conn, $checkExistingBlackListCar);
+    if (mysqli_num_rows($checkExistingBlackListCarResult) > 0) {
+        echo "6";
+    }else{
+        $blackListCarInsertQuery = "INSERT INTO `black_list_cars` (`car_reg`) VALUES ('$blackListCar')";
+
+        if ($conn->query($blackListCarInsertQuery) === TRUE) {
+            /* successful code is 1*/
+            echo "1";
+        } else {
+            /* successful code is 2*/
             echo "2";
         }
     }
