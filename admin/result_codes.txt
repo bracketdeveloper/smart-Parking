@@ -1,0 +1,6 @@
+1: Car is ok to park
+2: Car with the same Reg is already in the Parking Lot
+3: Show the parking fare
+4: payment success
+
+
