@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 06, 2023 at 08:18 PM
--- Server version: 10.4.28-MariaDB
--- PHP Version: 8.2.4
+-- Generation Time: Dec 20, 2023 at 09:21 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -31,15 +31,27 @@ CREATE TABLE `admin` (
   `admin_id` int(11) NOT NULL,
   `admin_name` varchar(225) NOT NULL,
   `admin_email` varchar(225) NOT NULL,
-  `admin_password` varchar(225) NOT NULL
+  `admin_password` varchar(225) NOT NULL,
+  `parking_capacity` int(11) NOT NULL DEFAULT 4
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `admin`
 --
 
-INSERT INTO `admin` (`admin_id`, `admin_name`, `admin_email`, `admin_password`) VALUES
-(1, 'Suleman Mushtaq', 'admin@gmail.com', '123456');
+INSERT INTO `admin` (`admin_id`, `admin_name`, `admin_email`, `admin_password`, `parking_capacity`) VALUES
+(1, 'Suleman Mushtaq', 'admin@gmail.com', '123456', 4);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `black_list_cars`
+--
+
+CREATE TABLE `black_list_cars` (
+  `id` int(11) NOT NULL,
+  `car_reg` varchar(225) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -51,7 +63,8 @@ CREATE TABLE `in_data` (
   `id` int(11) NOT NULL,
   `car_reg` varchar(225) NOT NULL,
   `date_time` varchar(225) NOT NULL,
-  `status` varchar(10) NOT NULL DEFAULT 'parked'
+  `status` varchar(10) NOT NULL DEFAULT 'parked',
+  `alert_status` varchar(225) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -115,6 +128,12 @@ ALTER TABLE `admin`
   ADD PRIMARY KEY (`admin_id`);
 
 --
+-- Indexes for table `black_list_cars`
+--
+ALTER TABLE `black_list_cars`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `in_data`
 --
 ALTER TABLE `in_data`
@@ -149,16 +168,22 @@ ALTER TABLE `admin`
   MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT for table `black_list_cars`
+--
+ALTER TABLE `black_list_cars`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
 -- AUTO_INCREMENT for table `in_data`
 --
 ALTER TABLE `in_data`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=106;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=128;
 
 --
 -- AUTO_INCREMENT for table `out_data`
 --
 ALTER TABLE `out_data`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=84;
 
 --
 -- AUTO_INCREMENT for table `staff`
@@ -170,7 +195,7 @@ ALTER TABLE `staff`
 -- AUTO_INCREMENT for table `transactions`
 --
 ALTER TABLE `transactions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
