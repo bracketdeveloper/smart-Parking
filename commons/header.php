@@ -16,6 +16,7 @@ if (isset($_SESSION['admin'])) {
     $userEmail = $_SESSION['staff_email'];
     $userPassword = $_SESSION['staff_password'];
 }
+$alertStatusCars = getTotalAlertStatusCars($conn);
 ?>
 <!-- ======= Header ======= -->
 <header id="header" class="header fixed-top d-flex align-items-center">
@@ -114,7 +115,12 @@ if (isset($_SESSION['admin'])) {
         <?php
   endif;
 ?>
-
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="emergency_alerts.php">
+                <i class="bi bi-eye-fill"></i>
+                <span>Emergency Alerts <span id="alert-number"><?php echo sizeof($alertStatusCars)?></span></span>
+            </a>
+        </li>
     </ul>
 
 </aside><!-- End Sidebar-->

@@ -260,6 +260,109 @@ function validateAddBlackListCar() {
     });
 }
 
+function validateEditBlackListCar(id) {
+    $('body').off('click', '#btn-edit-black-list-car');
+    $('body').on('click', '#btn-edit-black-list-car', function (e) {
+        e.preventDefault();
+        const blackListCarEl = document.getElementById('black-list-car');
+
+        var blackListCar = blackListCarEl.value;
+        blackListCar = blackListCar.trim()
+
+        if (blackListCar == "") {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Warning',
+                text: 'Enter black list car reg',
+            }).then((result) => {
+            })
+            return false;
+        }
+        var formData = new FormData();
+        formData.append('car_id', id);
+        formData.append('black_list_car', blackListCar);
+        $.ajax({
+            url: "admin/ajax_process.php?action=edit_black_list_car",
+            type: 'POST',
+            contentType: false,
+            processData: false,
+            data: formData,
+        }).done(function (data) {
+        console.log(data);
+            /* successful code is 1*/
+            if (data == "1") {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Congrats',
+                    text: 'Black list car is added',
+                }).then((result) => {
+                    window.location.replace('black_list_cars.php');
+                })
+            }
+            /* failed code is 2*/
+            if (data == "2") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Error occur while adding black list car',
+                })
+            }
+            if (data == "6") {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Invalid',
+                                text: 'Black list car is already added',
+                            })
+                        }
+        });
+    });
+}
+
+function deleteCar(id){
+Swal.fire({
+    title: "Delete Black List Car",
+    text: "Do you want to delete this black list car",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#30d630",
+    confirmButtonText: "Yes",
+    cancelButtonText: "No",
+  }).then((result) => {
+        if (result.isConfirmed) {
+                   var formData = new FormData();
+                   formData.append("car_id", id);
+                  $.ajax({
+                      url: "admin/ajax_process.php?action=delete_black_list_car",
+                      type: 'POST',
+                      contentType: false,
+                      processData: false,
+                      data: formData,
+                  }).done(function (data) {
+                  console.log(data);
+                      /* successful code is 1*/
+                      if (data == "1") {
+                          Swal.fire({
+                              icon: 'success',
+                              title: 'Success',
+                              text: 'Car is removed from black list',
+                          }).then((result) => {
+                              location.reload(true)
+                          })
+                      }
+                      /* failed code is 2*/
+                      if (data == "2") {
+                          Swal.fire({
+                              icon: 'error',
+                              title: 'Error',
+                              text: 'Error occur while deleting black list car',
+                          })
+                      }
+                  });
+        }
+      });
+}
+
 /* Edit Password Form Script*/
 function validateEditPassword(userId, originalPassword) {
     $('body').off('click', '#btn-edit-password');

@@ -45,8 +45,8 @@ $blackListCars = getAllBlackListCars($conn);
                                 <tr>
                                     <th scope="row"><?php echo $i?></th>
                                     <td><?php echo $blackListCar['car_reg']?></td>
-                                    <td><button class="btn btn-success"><i class="bi bi-pen"></i></button></td>
-                                    <td><button class="btn btn-danger"><i class="bi bi-trash"></i></button></td>
+                                    <td><a href="edit_black_list_car.php?id=<?php echo $blackListCar['id'];?>" class="btn btn-success"><i class="bi bi-pen"></i></a></td>
+                                    <td><button class="btn btn-danger" onclick="return deleteCar(<?php echo $blackListCar['id'];?>)"><i class="bi bi-trash"></i></button></td>
                                 </tr>
                             <?php
                             endforeach;

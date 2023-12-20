@@ -49,6 +49,19 @@ function getAllBlackListCars($conn)
     return $data;
 }
 
+function getSpecificBlackListCar($conn, $id)
+{
+    $allBlackListCarsQuery = "SELECT * FROM `black_list_cars` WHERE `id` = $id";
+    $allBlackListCarsQueryResult = mysqli_query($conn, $allBlackListCarsQuery);
+    $data = array();
+    if (mysqli_num_rows($allBlackListCarsQueryResult) > 0) {
+        while ($row = $allBlackListCarsQueryResult->fetch_assoc()) {
+            $data[] = $row;
+        }
+    }
+    return $data;
+}
+
 /* get admin details by id*/
 function getAdminDetailsByID($conn, $adminID)
 {
@@ -120,6 +133,20 @@ function insertCarDetailsInDB($conn, $carReg, $time)
     $conn->query($sql) === TRUE;
 }
 
+function insertCarDetailsWithAlreadyParkedAlertInDB($conn, $carReg, $time)
+{
+    $sql = "INSERT INTO `in_data`(`car_reg`, `date_time`, `alert_status`) VALUES 
+    ('{$carReg}', '{$time}', '1')";
+    $conn->query($sql) === TRUE;
+}
+
+function insertCarDetailsBlackListAlertInDB($conn, $carReg, $time)
+{
+    $sql = "INSERT INTO `in_data`(`car_reg`, `date_time`, `alert_status`) VALUES 
+    ('{$carReg}', '{$time}', '2')";
+    $conn->query($sql) === TRUE;
+}
+
 function insertFareInDB($conn, $carReg, $parkingFare)
 {
     $sqlInsert = "INSERT INTO `transactions`(`car_reg`, `parking_fare`) VALUES 
@@ -134,6 +161,19 @@ function insertFareInDB($conn, $carReg, $parkingFare)
 function checkCarExistance($conn, $carReg)
 {
     $sql = "SELECT * FROM `in_data` WHERE `car_reg` = '$carReg' AND `status` = 'parked'";
+
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        return 0;
+    } else {
+        return 1;
+    }
+}
+
+function checkBlackListCar($conn, $carReg)
+{
+    $sql = "SELECT * FROM `black_list_cars` WHERE `car_reg` = '$carReg'";
 
     $result = $conn->query($sql);
 
@@ -184,6 +224,18 @@ function sendEmail($staffEmail, $staffName, $staffPassword)
 
 function getTotalParkedCars($conn){
     $allStaffMembersQuery = "SELECT * FROM `in_data` WHERE `status` = 'parked'";
+    $allStaffMembersQueryResult = mysqli_query($conn, $allStaffMembersQuery);
+    $data = array();
+    if (mysqli_num_rows($allStaffMembersQueryResult) > 0) {
+        while ($row = $allStaffMembersQueryResult->fetch_assoc()) {
+            $data[] = $row;
+        }
+    }
+    return $data;
+}
+
+function getTotalAlertStatusCars($conn){
+    $allStaffMembersQuery = "SELECT * FROM `in_data` WHERE `alert_status` != '0'";
     $allStaffMembersQueryResult = mysqli_query($conn, $allStaffMembersQuery);
     $data = array();
     if (mysqli_num_rows($allStaffMembersQueryResult) > 0) {
