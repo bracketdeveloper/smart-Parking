@@ -1,35 +1,3 @@
-$("#username").keypress(function () {
-  const usernameRequiredErrorEl = document.getElementById(
-    "username-required-span"
-  );
-
-  if (!usernameRequiredErrorEl.hasAttribute("hidden")) {
-    usernameRequiredErrorEl.setAttribute("hidden", "");
-  }
-});
-
-$("#password").keypress(function () {
-  const passwordRequiredErrorEl = document.getElementById(
-    "password-required-span"
-  );
-
-  if (!passwordRequiredErrorEl.hasAttribute("hidden")) {
-    passwordRequiredErrorEl.setAttribute("hidden", "");
-  }
-});
-
-$("#email").keypress(function () {
-  const emailRequiredErrorEl = document.getElementById("email-required-span");
-  const emailInvalidErrorEl = document.getElementById("email-invalid-span");
-
-  if (!emailRequiredErrorEl.hasAttribute("hidden")) {
-    emailRequiredErrorEl.setAttribute("hidden", "");
-  }
-  if (!emailInvalidErrorEl.hasAttribute("hidden")) {
-    emailInvalidErrorEl.setAttribute("hidden", "");
-  }
-});
-
 function confirmLogout() {
   Swal.fire({
     title: "Are you sure?",
@@ -71,28 +39,6 @@ function showHidePassword() {
     showHidePasswordIconEl.setAttribute("class", "fa fa-eye col-1");
   }
 }
-
-function removeErrorMsg(errorMessageSpanID) {
-  const emailRequiredErrorEl = document.getElementById(errorMessageSpanID);
-
-  if (!emailRequiredErrorEl.hasAttribute("hidden")) {
-    emailRequiredErrorEl.setAttribute("hidden", "");
-  }
-}
-
-$("#player-2").change(function () {
-  removeErrorMsg("player-2-required-span");
-  var player1Val = $("#player-1 option:selected").val();
-  var player2Val = $("#player-2 option:selected").val();
-  if (player1Val == player2Val) {
-    Swal.fire({
-      icon: "error",
-      title: "Player Selection Error",
-      text: "Kindly select different player to compare",
-    });
-    $("#player-2").prop("selectedIndex", 0);
-  }
-});
 
 function checkNewEntry() {
   $.ajax({

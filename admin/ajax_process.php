@@ -38,6 +38,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'login') {
             $_SESSION["staff_email"] = $row['staff_email'];
             $_SESSION["staff_name"] = $row['staff_name'];
             $_SESSION["staff_id"] = $row['staff_id'];
+            $_SESSION["parking_capacity"] = $row['parking_capacity'];
             $_SESSION["user_type"] = "staff";
             /* login successful code is 1*/
             echo "1";
@@ -416,6 +417,8 @@ if (isset($_GET['action']) && $_GET['action'] == "edit_parking_capacity") {
     $parkingCapacity = mysqli_real_escape_string($conn, $_POST['parking_capacity']);
 
     $parkingCapacityUpdateQuery = "UPDATE `admin` SET `parking_capacity` = '$parkingCapacity'";
+    $isParkingCapacityEdit = $conn->query($parkingCapacityUpdateQuery) === TRUE;
+    $parkingCapacityUpdateQuery = "UPDATE `staff` SET `parking_capacity` = '$parkingCapacity'";
     $isParkingCapacityEdit = $conn->query($parkingCapacityUpdateQuery) === TRUE;
 
     if ($isParkingCapacityEdit) {

@@ -1,9 +1,6 @@
 <?php
 session_start();
-if (!((isset($_SESSION['admin']) && $_SESSION['admin'] == "True") ||
-    ((isset($_SESSION['user']) && $_SESSION['user'] == "True")))) {
-    echo "<script>window.location.replace('login.php')</script>";
-}
+
 if ((isset($_GET['get_data']) && $_GET['get_data'] === 'Get Data')){
     $startDate = $_GET['start_date'];
     $endDate = $_GET['end_date'];

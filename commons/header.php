@@ -15,6 +15,7 @@ if (isset($_SESSION['admin'])) {
     $userName = $_SESSION['staff_name'];
     $userEmail = $_SESSION['staff_email'];
     $userPassword = $_SESSION['staff_password'];
+    $totalCapacity = $_SESSION['parking_capacity'];
 }
 $alertStatusCars = getTotalAlertStatusCars($conn);
 ?>

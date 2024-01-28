@@ -1,9 +1,6 @@
 <?php
 session_start();
-if (!((isset($_SESSION['admin']) && $_SESSION['admin'] == "True") ||
-    ((isset($_SESSION['user']) && $_SESSION['user'] == "True")))) {
-    echo "<script>window.location.replace('login.php')</script>";
-}
+
 ?>
 <?php
 $pageTile = "Reports";
