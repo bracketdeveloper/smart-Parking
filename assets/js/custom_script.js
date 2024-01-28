@@ -108,8 +108,8 @@ function checkNewEntry() {
             text: 'Sorry but our parking capacity is full',
           })
     }
-    resultCode = data.result_code;
-    carReg = data.car_reg;
+    var resultCode = data.result_code;
+    var carReg = data.car_reg;
 
     /* login successful code is 1*/
     if (resultCode == 1) {
@@ -128,6 +128,36 @@ function checkNewEntry() {
         text: 'Car with "' + carReg + '" is already is the parking lot',
       });
     }
+    if (resultCode == 7) {
+          Swal.fire({
+            icon: "success",
+            title: "Welcome",
+            text: 'Open the barrier for "' + carReg + '"',
+          }).then((result) => {
+                  Swal.fire({
+                    icon: "error",
+                    title: "Warning",
+                    text: 'Car with "' + carReg + '" is already parked',
+                  }).then((result) => {
+                    location.reload(true)
+                    })
+            })
+        }
+    if (resultCode == 8) {
+          Swal.fire({
+            icon: "success",
+            title: "Welcome",
+            text: 'Open the barrier for "' + carReg + '"',
+          }).then((result) => {
+                  Swal.fire({
+                    icon: "error",
+                    title: "Warning",
+                    text: 'Car with "' + carReg + '" is black list car',
+                  }).then((result) => {
+                    location.reload(true)
+                    })
+            })
+        }
   });
 }
 
@@ -138,9 +168,28 @@ function checkNewExit() {
     contentType: false,
     processData: false,
   }).done(function (data) {
+  console.log(data)
     resultCode = data.result_code;
     parkingFare = data.parking_fare;
-    carReg = data.car_reg;
+    var carReg = data.car_reg;
+    if(resultCode == 9){
+    Swal.fire({
+        icon: "error",
+        title: "Warning",
+        text: 'Cannot open the barrier car with "' + carReg + '" is already parked',
+      }).then((result) => {
+        location.reload(true)
+        })
+    }
+    if(resultCode == 10){
+    Swal.fire({
+        icon: "error",
+        title: "Warning",
+        text: 'Cannot open the barrier car with "' + carReg + '" is black list',
+      }).then((result) => {
+        location.reload(true)
+        })
+    }
     if (resultCode == 3) {
       Swal.fire({
         icon: "info",
@@ -188,5 +237,7 @@ function checkNewExit() {
     }
   });
 }
+
+
 
 

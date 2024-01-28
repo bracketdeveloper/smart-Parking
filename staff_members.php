@@ -33,6 +33,8 @@ $staffMembers = getAllStaffMembers($conn);
                                 <th scope="col">#</th>
                                 <th scope="col">Name</th>
                                 <th scope="col">Email</th>
+                                <th scope="col">Edit</th>
+                                <th scope="col">Delete</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -45,6 +47,8 @@ $staffMembers = getAllStaffMembers($conn);
                                     <th scope="row"><?php echo $i?></th>
                                     <td><?php echo $staffMember['staff_name']?></td>
                                     <td><?php echo $staffMember['staff_email']?></td>
+                                    <td><a href="edit_staff_member.php?id=<?php echo $staffMember['staff_id'];?>" class="btn btn-success"><i class="bi bi-pen"></i></a></td>
+                                    <td><button class="btn btn-danger" onclick="return deleteStaff(<?php echo $staffMember['staff_id'];?>)"><i class="bi bi-trash"></i></button></td>
                                 </tr>
                             <?php
                             endforeach;

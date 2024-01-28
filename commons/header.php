@@ -118,7 +118,24 @@ $alertStatusCars = getTotalAlertStatusCars($conn);
         <li class="nav-item">
             <a class="nav-link collapsed" href="emergency_alerts.php">
                 <i class="bi bi-eye-fill"></i>
-                <span>Emergency Alerts <span id="alert-number"><?php echo sizeof($alertStatusCars)?></span></span>
+                <span>Emergency Alerts <span id="alert-number"><?php
+                        if(sizeof($alertStatusCars) != 0) {
+                            echo (sizeof($alertStatusCars));
+                        }?></span></span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="charts.php">
+                <i class="bi bi-bar-chart-line"></i>
+                <span>Charts</span>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="reports.php">
+                <i class="bi bi-envelope-paper"></i>
+                <span>Reports</span>
             </a>
         </li>
     </ul>

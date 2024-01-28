@@ -116,7 +116,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'check_new_entry') {
                 if(checkBlackListCar($conn, $carReg[$k]) == 0){
                     insertCarDetailsBlackListAlertInDB($conn, $carReg[$k], $timeStamp[$k]);
                     $result = array(
-                        "result_code" => "1", //Open The Barrier
+                        "result_code" => "8", //Open The Barrier
                         "car_reg" => $carReg[$k]
                     );
                     $result = json_encode($result);
@@ -137,7 +137,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'check_new_entry') {
                     else :
                         insertCarDetailsWithAlreadyParkedAlertInDB($conn, $carReg[$k], $timeStamp[$k]);
                         $result = array(
-                            "result_code" => "1", //Open The Barrier
+                            "result_code" => "7", //Open The Barrier
                             "car_reg" => $carReg[$k]
                         );
                         $result = json_encode($result);
@@ -207,6 +207,43 @@ if (isset($_GET['action']) && $_GET['action'] == 'check_new_exit') {
             $result = $conn->query($sql);
 
             if (!$result->num_rows > 0) {
+                $sql = "SELECT * FROM `in_data` WHERE `car_reg` = '{$carReg[$k]}' AND `status` = 'parked'";
+                $sqlResult = mysqli_query($conn, $sql);
+                $data = array();
+                if (mysqli_num_rows($sqlResult) > 0) {
+                    while ($row = $sqlResult->fetch_assoc()) {
+                        $data[] = $row;
+                    }
+                }
+                if($data[0]['alert_status'] == 1){
+                    $result = array(
+                        "result_code" => "9",
+                        "parking_fare" => 0,
+                        "car_reg" => $carReg[$k]
+                    );
+                    $result = json_encode($result);
+
+                    // Set the response content type
+                    header('Content-Type: application/json');
+
+                    echo ($result);
+                    return;
+                }
+
+                if($data[0]['alert_status'] == 2){
+                    $result = array(
+                        "result_code" => "10",
+                        "parking_fare" => 0,
+                        "car_reg" => $carReg[$k]
+                    );
+                    $result = json_encode($result);
+
+                    // Set the response content type
+                    header('Content-Type: application/json');
+
+                    echo ($result);
+                    return;
+                }
                 $sqlInsert = "INSERT INTO `out_data` (`car_reg`, `date_time`) VALUES 
                 ('{$carReg[$k]}', '{$timeStamp[$k]}')";
                 $conn->query($sqlInsert);
@@ -221,7 +258,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'complete_transaction') {
     $carReg = mysqli_real_escape_string($conn, $_POST['car_reg']);
     $parkingFare = mysqli_real_escape_string($conn, $_POST['parking_fare']);
 
-    $sqlUpdate = "UPDATE `in_data` SET `status`='Not Parked' 
+    $sqlUpdate = "UPDATE `in_data` SET `status`='Not Parked' and `alert_status` = '0'
                     WHERE `car_reg` = '{$carReg}' and `status` = 'parked'";
     $conn->query($sqlUpdate);
 
@@ -391,15 +428,126 @@ if (isset($_GET['action']) && $_GET['action'] == "edit_parking_capacity") {
     }
 }
 
+if (isset($_GET['action']) && $_GET['action'] == "get_chart_data") {
+    $allChartDataQuery = "SELECT DATE_FORMAT(DATE(`time`), '%d-%m-%Y') AS transaction_date, 
+       SUM(`parking_fare`) AS total_fare FROM `transactions` GROUP BY DATE(`time`);";
+    $allChartDataQueryResult = mysqli_query($conn, $allChartDataQuery);
+    $data = array();
+    if (mysqli_num_rows($allChartDataQueryResult) > 0) {
+        while ($row = $allChartDataQueryResult->fetch_assoc()) {
+            $data[] = $row;
+        }
+    }
+    $data = json_encode($data);
+    header('Content-Type: application/json');
+    echo($data);
+}
+
+if (isset($_GET['action']) && $_GET['action'] == "get_chart_data_range") {
+    $startDate = mysqli_real_escape_string($conn, $_POST['start_date']);
+    $endDate = mysqli_real_escape_string($conn, $_POST['end_date']);
+    $startDate = date("Y-m-d", strtotime($startDate));
+    $endDate = date("Y-m-d", strtotime($endDate));
+    $allChartDataQuery = "SELECT DATE_FORMAT(DATE(`time`), '%d-%m-%Y') AS transaction_date, 
+       SUM(`parking_fare`) AS total_fare
+FROM `transactions`
+WHERE DATE(`time`) BETWEEN '$startDate' AND '$endDate'
+GROUP BY DATE(`time`);";
+
+    $allChartDataQueryResult = mysqli_query($conn, $allChartDataQuery);
+    $data = array();
+    if (mysqli_num_rows($allChartDataQueryResult) > 0) {
+        while ($row = $allChartDataQueryResult->fetch_assoc()) {
+            $data[] = $row;
+        }
+    }
+    $data = json_encode($data);
+    header('Content-Type: application/json');
+    echo($data);
+}
+
+if (isset($_GET['action']) && $_GET['action'] == "generate_date_range_report") {
+    $startDate = mysqli_real_escape_string($conn, $_POST['start_date']);
+    $endDate = mysqli_real_escape_string($conn, $_POST['end_date']);
+    $startDate = date("Y-m-d", strtotime($startDate));
+    $endDate = date("Y-m-d", strtotime($endDate));
+    $allChartDataQuery = "SELECT *
+FROM `transactions`
+WHERE DATE(`time`) BETWEEN '$startDate' AND '$endDate';";
+
+    $allChartDataQueryResult = mysqli_query($conn, $allChartDataQuery);
+    $data = array();
+    if (mysqli_num_rows($allChartDataQueryResult) > 0) {
+        while ($row = $allChartDataQueryResult->fetch_assoc()) {
+            $data[] = $row;
+        }
+    }
+    if(sizeof($data) == 0){
+        echo "1";
+        return;
+    }
+    $data = json_encode($data);
+    header('Content-Type: application/json');
+    echo($data);
+
+}
+
+if (isset($_GET['action']) && $_GET['action'] == "generate_specific_date_report") {
+    $reportDate = mysqli_real_escape_string($conn, $_POST['report_date']);
+    $reportDate = date("Y-m-d", strtotime($reportDate));
+    $allChartDataQuery = "SELECT *
+FROM `transactions`
+WHERE DATE(`time`) LIKE '$reportDate';";
+    $allChartDataQueryResult = mysqli_query($conn, $allChartDataQuery);
+    $data = array();
+    if (mysqli_num_rows($allChartDataQueryResult) > 0) {
+        while ($row = $allChartDataQueryResult->fetch_assoc()) {
+            $data[] = $row;
+        }
+    }
+    if(sizeof($data) == 0){
+        echo "1";
+        return;
+    }
+    $data = json_encode($data);
+    header('Content-Type: application/json');
+    echo($data);
+
+}
+
+if (isset($_GET['action']) && $_GET['action'] == "generate_specific_car_report") {
+    $carReg = mysqli_real_escape_string($conn, $_POST['car_reg']);
+
+    $allChartDataQuery = "SELECT *
+FROM `transactions`
+WHERE `car_reg` = '$carReg';";
+    $allChartDataQueryResult = mysqli_query($conn, $allChartDataQuery);
+    $data = array();
+    if (mysqli_num_rows($allChartDataQueryResult) > 0) {
+        while ($row = $allChartDataQueryResult->fetch_assoc()) {
+            $data[] = $row;
+        }
+    }
+    if(sizeof($data) == 0){
+        echo "1";
+        return;
+    }
+    $data = json_encode($data);
+    header('Content-Type: application/json');
+    echo($data);
+
+}
+
 if (isset($_GET['action']) && $_GET['action'] == "add_black_list_car") {
     $blackListCar = mysqli_real_escape_string($conn, $_POST['black_list_car']);
+    $blackListReason = mysqli_real_escape_string($conn, $_POST['black_list_reason']);
 
     $checkExistingBlackListCar = "SELECT * FROM `black_list_cars` WHERE `car_reg` = '$blackListCar'";
     $checkExistingBlackListCarResult = mysqli_query($conn, $checkExistingBlackListCar);
     if (mysqli_num_rows($checkExistingBlackListCarResult) > 0) {
         echo "6";
     } else {
-        $blackListCarInsertQuery = "INSERT INTO `black_list_cars` (`car_reg`) VALUES ('$blackListCar')";
+        $blackListCarInsertQuery = "INSERT INTO `black_list_cars` (`car_reg`, `reason`) VALUES ('$blackListCar', '$blackListReason')";
 
         if ($conn->query($blackListCarInsertQuery) === TRUE) {
             /* successful code is 1*/
@@ -438,6 +586,32 @@ if (isset($_GET['action']) && $_GET['action'] == "delete_black_list_car") {
 
     $blackListCarDeleteQuery = "DELETE FROM `black_list_cars` WHERE `id` = $carId";
     if ($conn->query($blackListCarDeleteQuery) === TRUE) {
+        /* successful code is 1*/
+        echo "1";
+    } else {
+        /* successful code is 2*/
+        echo "2";
+    }
+}
+
+if (isset($_GET['action']) && $_GET['action'] == "delete_emergency_alert") {
+    $alertId = mysqli_real_escape_string($conn, $_POST['alert_id']);
+
+    $emergencyAlertDeleteQuery = "UPDATE `in_data` SET `status`='Not Parked',`alert_status`='0'WHERE `id` = $alertId";
+    if ($conn->query($emergencyAlertDeleteQuery) === TRUE) {
+        /* successful code is 1*/
+        echo "1";
+    } else {
+        /* successful code is 2*/
+        echo "2";
+    }
+}
+
+if (isset($_GET['action']) && $_GET['action'] == "delete_staff_member") {
+    $staffId = mysqli_real_escape_string($conn, $_POST['staff_id']);
+
+    $stafffDeleteQuery = "DELETE FROM `staff` WHERE `staff_id` = $staffId";
+    if ($conn->query($stafffDeleteQuery) === TRUE) {
         /* successful code is 1*/
         echo "1";
     } else {

@@ -4,4 +4,8 @@
 4: payment success
 5: no parking capacity
 6: already black list car
+7: open barrier for same car reg
+8: open barrier for Black List Car
+9: existing same car reg
+10: existing Black List Car
 

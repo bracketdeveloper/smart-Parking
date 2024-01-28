@@ -49,6 +49,33 @@ function getAllBlackListCars($conn)
     return $data;
 }
 
+function getSpecificBlackListCarByReg($conn, $carReg)
+{
+    $allBlackListCarsQuery = "SELECT * FROM `black_list_cars` WHERE `car_reg` = '$carReg'";
+    $allBlackListCarsQueryResult = mysqli_query($conn, $allBlackListCarsQuery);
+    $data = array();
+    if (mysqli_num_rows($allBlackListCarsQueryResult) > 0) {
+        while ($row = $allBlackListCarsQueryResult->fetch_assoc()) {
+            $data[] = $row;
+        }
+    }
+    return $data;
+}
+
+
+function getAllEmergencyAlerts($conn)
+{
+    $allEmergencyAlertsQuery = "SELECT * FROM `in_data` WHERE `alert_status` != '0'";
+    $allEmergencyAlertsQueryResult = mysqli_query($conn, $allEmergencyAlertsQuery);
+    $data = array();
+    if (mysqli_num_rows($allEmergencyAlertsQueryResult) > 0) {
+        while ($row = $allEmergencyAlertsQueryResult->fetch_assoc()) {
+            $data[] = $row;
+        }
+    }
+    return $data;
+}
+
 function getSpecificBlackListCar($conn, $id)
 {
     $allBlackListCarsQuery = "SELECT * FROM `black_list_cars` WHERE `id` = $id";
@@ -56,6 +83,19 @@ function getSpecificBlackListCar($conn, $id)
     $data = array();
     if (mysqli_num_rows($allBlackListCarsQueryResult) > 0) {
         while ($row = $allBlackListCarsQueryResult->fetch_assoc()) {
+            $data[] = $row;
+        }
+    }
+    return $data;
+}
+
+function getSpecificStaffMember($conn, $id)
+{
+    $allStaffMembersQuery = "SELECT * FROM `staff` WHERE `staff_id` = $id";
+    $allStaffMembersQueryResult = mysqli_query($conn, $allStaffMembersQuery);
+    $data = array();
+    if (mysqli_num_rows($allStaffMembersQueryResult) > 0) {
+        while ($row = $allStaffMembersQueryResult->fetch_assoc()) {
             $data[] = $row;
         }
     }

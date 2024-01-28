@@ -32,6 +32,7 @@ $blackListCars = getAllBlackListCars($conn);
                             <tr>
                                 <th scope="col">#</th>
                                 <th scope="col">Car Reg</th>
+                                <th scope="col">Reason</th>
                                 <th scope="col">Edit</th>
                                 <th scope="col">Delete</th>
                             </tr>
@@ -45,6 +46,7 @@ $blackListCars = getAllBlackListCars($conn);
                                 <tr>
                                     <th scope="row"><?php echo $i?></th>
                                     <td><?php echo $blackListCar['car_reg']?></td>
+                                    <td><?php echo $blackListCar['reason']?></td>
                                     <td><a href="edit_black_list_car.php?id=<?php echo $blackListCar['id'];?>" class="btn btn-success"><i class="bi bi-pen"></i></a></td>
                                     <td><button class="btn btn-danger" onclick="return deleteCar(<?php echo $blackListCar['id'];?>)"><i class="bi bi-trash"></i></button></td>
                                 </tr>

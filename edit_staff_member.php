@@ -9,9 +9,9 @@ if(!isset($_GET['id'])){
 }
 ?>
 <?php
-$pageTile = "Edit Black List Car";
+$pageTile = "Edit Staff Member";
 require_once "commons/head.php";
-$blackListCar = getSpecificBlackListCar($conn, $_GET['id']);
+$staffMember = getSpecificStaffMember($conn, $_GET['id']);
 ?>
   <!-- ======= Header ======= -->
 <?php require_once "commons/header.php";?>
@@ -29,16 +29,25 @@ $blackListCar = getSpecificBlackListCar($conn, $_GET['id']);
         <div class="col-lg-8">
           <div class="row">
               <?php
-              if(sizeof($blackListCar) > 0):
+              if(sizeof($staffMember) > 0):
               ?>
               <form>
 
                   <div class="row mb-3">
                       <label for="Total Capacity" class="col-md-4 col-lg-3 col-form-label">Edit
-                          Black List Car</label>
+                          Name</label>
                       <div class="col-md-8 col-lg-9">
-                          <input type="text" class="form-control" id="black-list-car"
-                          value="<?php echo $blackListCar[0]['car_reg']?>">
+                          <input type="text" class="form-control" id="staff-name"
+                          value="<?php echo $staffMember[0]['staff_name']?>">
+                      </div>
+                  </div>
+
+                  <div class="row mb-3">
+                      <label for="Total Capacity" class="col-md-4 col-lg-3 col-form-label">Edit
+                          Name</label>
+                      <div class="col-md-8 col-lg-9">
+                          <input type="email" class="form-control" id="staff-email"
+                                 value="<?php echo $staffMember[0]['staff_email']?>">
                       </div>
                   </div>
 

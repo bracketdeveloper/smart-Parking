@@ -213,6 +213,17 @@ require_once "commons/head.php";
                                             </div>
                                         </div>
 
+                                        <div class="row mb-3">
+                                            <label for="Total Capacity" class="col-md-4 col-lg-3 col-form-label">Reason</label>
+                                            <div class="col-md-8 col-lg-9">
+                                                <select type="text" class="form-control" id="black-list-reason">
+                                                    <option value="Stolen">Stolen</option>
+                                                    <option value="Hit and Run">Hit and Run</option>
+                                                    <option value="Non Custom">Non Custom</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
                                         <div class="text-center">
                                             <button type="submit" class="btn btn-primary"
                                                     onclick="return validateAddBlackListCar()"
