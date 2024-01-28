@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 20, 2023 at 09:21 PM
+-- Generation Time: Jan 28, 2024 at 11:44 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -35,13 +35,6 @@ CREATE TABLE `admin` (
   `parking_capacity` int(11) NOT NULL DEFAULT 4
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `admin`
---
-
-INSERT INTO `admin` (`admin_id`, `admin_name`, `admin_email`, `admin_password`, `parking_capacity`) VALUES
-(1, 'Suleman Mushtaq', 'admin@gmail.com', '123456', 4);
-
 -- --------------------------------------------------------
 
 --
@@ -50,7 +43,8 @@ INSERT INTO `admin` (`admin_id`, `admin_name`, `admin_email`, `admin_password`, 
 
 CREATE TABLE `black_list_cars` (
   `id` int(11) NOT NULL,
-  `car_reg` varchar(225) NOT NULL
+  `car_reg` varchar(225) NOT NULL,
+  `reason` varchar(225) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -90,19 +84,9 @@ CREATE TABLE `staff` (
   `staff_id` int(11) NOT NULL,
   `staff_name` varchar(225) NOT NULL,
   `staff_email` varchar(225) NOT NULL,
-  `staff_password` varchar(225) NOT NULL
+  `staff_password` varchar(225) NOT NULL,
+  `parking_capacity` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `staff`
---
-
-INSERT INTO `staff` (`staff_id`, `staff_name`, `staff_email`, `staff_password`) VALUES
-(1, 'Amir Salar', 'staff1@gmail.com', '654321'),
-(2, 'Staff 2', 'staff2@gmail.com', 'staff2@123'),
-(3, 'Staff 3', 'staff3@gmail.com', 'staff3@123'),
-(4, 'Staff 4', 'staff4@gmail.com', 'staff4@123'),
-(6, 'Suleman Mushtaq', 'sulemanmushtaq3@gmail.com', 'nod3Fo');
 
 -- --------------------------------------------------------
 
@@ -165,37 +149,37 @@ ALTER TABLE `transactions`
 -- AUTO_INCREMENT for table `admin`
 --
 ALTER TABLE `admin`
-  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `admin_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `black_list_cars`
 --
 ALTER TABLE `black_list_cars`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `in_data`
 --
 ALTER TABLE `in_data`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=128;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `out_data`
 --
 ALTER TABLE `out_data`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=84;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `staff`
 --
 ALTER TABLE `staff`
-  MODIFY `staff_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `staff_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `transactions`
 --
 ALTER TABLE `transactions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
