@@ -1247,3 +1247,35 @@ h6 {
 .hidden-section{
   display: none;
 }
+.parking-lot {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.parking-space {
+  width: 150px;
+  height: 300px;
+  border-radius: 10px;
+  margin: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+}
+.free {
+  background-color: #8BC34A;
+}
+.occupied {
+  background-color: #F44336;
+}
+.parking-space img {
+  width: 80px;
+  height: auto;
+}
+.status-text {
+  margin-top: 10px;
+  font-size: 18px;
+  color: white;
+}

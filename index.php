@@ -73,6 +73,37 @@ $staffMembers = getAllStaffMembers($conn);
 
         <section class="section dashboard">
             <div class="row">
+                <div class="col-lg-12">
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Live Parking Slots</h4>
+                            <div class="parking-lot">
+                                <div id="slot1" class="parking-space free">
+                                    <img src="car11.png" alt="" style="display: none;">
+                                    <div class="status-text">Slot 1: Free</div>
+                                </div>
+                                <div id="slot2" class="parking-space free">
+                                    <img src="car12.png" alt="" style="display: none;">
+                                    <div class="status-text">Slot 2: Free</div>
+                                </div>
+                                <div id="slot3" class="parking-space free">
+                                    <img src="car13.png" alt="" style="display: none;">
+                                    <div class="status-text">Slot 3: Free</div>
+                                </div>
+                                <div id="slot4" class="parking-space free">
+                                    <img src="car14.png" alt="" style="display: none;">
+                                    <div class="status-text">Slot 4: Free</div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="section dashboard">
+            <div class="row">
                 <div class="col-lg-6">
 
                     <div class="card">
@@ -131,20 +162,20 @@ $staffMembers = getAllStaffMembers($conn);
                                 $i = 0;
                                 foreach ($allEmergencyAlerts as $emergencyAlert):
                                     $reason = "N/A";
-                                    if($emergencyAlert['alert_status'] == '1'){
+                                    if ($emergencyAlert['alert_status'] == '1') {
                                         $reason = "Already Parked";
                                     }
-                                    if($emergencyAlert['alert_status'] == '2'){
+                                    if ($emergencyAlert['alert_status'] == '2') {
                                         $reason = "Black List";
                                     }
                                     $date = date('d-m-Y H:i:s', strtotime($emergencyAlert['date_time']));
                                     $i++;
                                     ?>
                                     <tr>
-                                        <th scope="row"><?php echo $i?></th>
-                                        <td><?php echo $emergencyAlert['car_reg']?></td>
-                                        <td><?php echo $reason?></td>
-                                        <td><?php echo $date?></td>
+                                        <th scope="row"><?php echo $i ?></th>
+                                        <td><?php echo $emergencyAlert['car_reg'] ?></td>
+                                        <td><?php echo $reason ?></td>
+                                        <td><?php echo $date ?></td>
                                     </tr>
                                 <?php
                                 endforeach;
@@ -185,9 +216,9 @@ $staffMembers = getAllStaffMembers($conn);
                                     $i++;
                                     ?>
                                     <tr>
-                                        <th scope="row"><?php echo $i?></th>
-                                        <td><?php echo $parkedCar['car_reg']?></td>
-                                        <td><?php echo $date?></td>
+                                        <th scope="row"><?php echo $i ?></th>
+                                        <td><?php echo $parkedCar['car_reg'] ?></td>
+                                        <td><?php echo $date ?></td>
                                     </tr>
                                 <?php
                                 endforeach;
@@ -222,9 +253,9 @@ $staffMembers = getAllStaffMembers($conn);
                                     $i++;
                                     ?>
                                     <tr>
-                                        <th scope="row"><?php echo $i?></th>
-                                        <td><?php echo $staffMember['staff_name']?></td>
-                                        <td><?php echo $staffMember['staff_email']?></td>
+                                        <th scope="row"><?php echo $i ?></th>
+                                        <td><?php echo $staffMember['staff_name'] ?></td>
+                                        <td><?php echo $staffMember['staff_email'] ?></td>
 
                                     </tr>
                                 <?php
@@ -243,6 +274,42 @@ $staffMembers = getAllStaffMembers($conn);
         </section>
 
     </main><!-- End #main -->
+<script>
+    function updateParkingSpace(slot, status) {
+        var element = document.getElementById(slot);
+        var img = element.querySelector('img');
+        var text = element.querySelector('.status-text');
 
+        if(status === "Occupied") {
+            element.classList.add("occupied");
+            element.classList.remove("free");
+            img.style.display = 'block';
+            text.innerHTML = "Slot " + slot.charAt(4) + ": Occupied";
+        } else {
+            element.classList.add("free");
+            element.classList.remove("occupied");
+            img.style.display = 'none';
+            text.innerHTML = "Slot " + slot.charAt(4) + ": Free";
+        }
+    }
+
+    function fetchParkingStatus() {
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "http://192.168.43.30/");
+        xhr.onload = function() {
+            if(xhr.status === 200) {
+                var data = JSON.parse(xhr.responseText);
+                updateParkingSpace("slot1", data.slot1);
+                updateParkingSpace("slot2", data.slot2);
+                updateParkingSpace("slot3", data.slot3);
+                updateParkingSpace("slot4", data.slot4);
+            }
+        };
+        xhr.send();
+    }
+
+    setInterval(fetchParkingStatus, 5000); // Update every 5 seconds
+
+    </script>
     <!-- ======= Footer ======= -->
 <?php require_once "commons/footer.php"; ?>

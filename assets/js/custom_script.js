@@ -66,6 +66,7 @@ function checkNewEntry() {
       }).then((result) => {
         location.reload(true)
         })
+        fetch('http://192.168.43.237/open1').then(response => response.text()).then(data => console.log(data));
     }
     if (resultCode == 2) {
       Swal.fire({
@@ -87,6 +88,7 @@ function checkNewEntry() {
                   }).then((result) => {
                     location.reload(true)
                     })
+                    fetch('http://192.168.43.237/open1').then(response => response.text()).then(data => console.log(data));
             })
         }
     if (resultCode == 8) {
@@ -102,6 +104,7 @@ function checkNewEntry() {
                   }).then((result) => {
                     location.reload(true)
                     })
+                    fetch('http://192.168.43.237/open1').then(response => response.text()).then(data => console.log(data));
             })
         }
   });
@@ -167,6 +170,8 @@ function checkNewExit() {
               }).then((result) => {
                     location.reload(true)
                         });
+                fetch('http://192.168.43.237/open2').then(response => response.text()).then(data => console.log(data));
+
             }
           });
         }
@@ -183,7 +188,3 @@ function checkNewExit() {
     }
   });
 }
-
-
-
-

@@ -208,7 +208,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'check_new_exit') {
             $result = $conn->query($sql);
 
             if (!$result->num_rows > 0) {
-                $sql = "SELECT * FROM `in_data` WHERE `car_reg` = '{$carReg[$k]}' AND `status` = 'parked'";
+                $sql = "SELECT * FROM `in_data` WHERE `car_reg` = '{$carReg[$k]}' AND `status` = 'parked' ORDER BY `id` DESC";
                 $sqlResult = mysqli_query($conn, $sql);
                 $data = array();
                 if (mysqli_num_rows($sqlResult) > 0) {
@@ -216,6 +216,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'check_new_exit') {
                         $data[] = $row;
                     }
                 }
+
                 if($data[0]['alert_status'] == 1){
                     $result = array(
                         "result_code" => "9",
@@ -228,6 +229,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'check_new_exit') {
                     header('Content-Type: application/json');
 
                     echo ($result);
+                    removeLastEntryInCsv($csvFile);
                     return;
                 }
 
@@ -243,6 +245,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'check_new_exit') {
                     header('Content-Type: application/json');
 
                     echo ($result);
+                    removeLastEntryInCsv($csvFile);
                     return;
                 }
                 $sqlInsert = "INSERT INTO `out_data` (`car_reg`, `date_time`) VALUES 
@@ -717,73 +720,4 @@ if (isset($_GET['action']) && $_GET['action'] == 'recover_password') {
             echo "2";
         }
     }
-}
-
-if (isset($_GET['action']) && $_GET['action'] == "edit_data") {
-    $dataID = mysqli_real_escape_string($conn, $_POST['data_id']);
-    $height = mysqli_real_escape_string($conn, $_POST['height']);
-    $weight = mysqli_real_escape_string($conn, $_POST['weight']);
-    $sprint10Meter = mysqli_real_escape_string($conn, $_POST['sprint_10_meter']);
-    $sprint20Meter = mysqli_real_escape_string($conn, $_POST['sprint_20_meter']);
-    $sprint50Meter = mysqli_real_escape_string($conn, $_POST['sprint_50_meter']);
-    $dribbleCourse = mysqli_real_escape_string($conn, $_POST['dribble_course']);
-    $dribbleCourseMain = mysqli_real_escape_string($conn, $_POST['dribble_course_main']);
-    $dribbleCourseOff = mysqli_real_escape_string($conn, $_POST['dribble_course_off']);
-    $longBallPrecision = mysqli_real_escape_string($conn, $_POST['long_ball_precision']);
-    $flexibility = mysqli_real_escape_string($conn, $_POST['flexibility']);
-    $jumpStanding = mysqli_real_escape_string($conn, $_POST['jump_standing']);
-    $jumpRunning = mysqli_real_escape_string($conn, $_POST['jump_running']);
-    $strength = mysqli_real_escape_string($conn, $_POST['strength']);
-    $endurance = mysqli_real_escape_string($conn, $_POST['endurance']);
-    $technique = mysqli_real_escape_string($conn, $_POST['technique']);
-    $determination = mysqli_real_escape_string($conn, $_POST['determination']);
-    $tacticalSense = mysqli_real_escape_string($conn, $_POST['tactical_sense']);
-    $agility = mysqli_real_escape_string($conn, $_POST['agility']);
-    $reflexHand = mysqli_real_escape_string($conn, $_POST['reflex_hand']);
-    $reflexLeg = mysqli_real_escape_string($conn, $_POST['reflex_leg']);
-
-    $newPlayerDataUpdateQuery = "UPDATE `players_data` SET `player_height`='$height',`player_weight`='$weight',
-                             `player_sprint_10`='$sprint10Meter',`player_sprint_20`='$sprint20Meter',
-                             `player_sprint_50`='$sprint50Meter',`player_dribble_course`='$dribbleCourse',
-                             `player_dribble_course_main`='$dribbleCourseMain',
-                             `player_dribble_course_off`='$dribbleCourseOff',
-                             `player_long_ball_precision`='$longBallPrecision',
-                             `player_flexibility`='$flexibility',`player_jump_standing`='$jumpStanding',
-                             `player_jump_running`='$jumpRunning',`player_strength`='$strength',
-                             `player_endurance`='$endurance',`player_technique`='$technique',
-                             `player_determination`='$determination',`player_tactical_sense`='$tacticalSense',
-                             `player_agility`='$agility',`player_reflex_hand`='$reflexHand',
-                             `player_reflex_leg`='$reflexLeg' WHERE `player_data_id` = '$dataID' ";
-
-    if ($conn->query($newPlayerDataUpdateQuery) === TRUE) {
-        /* successful code is 1*/
-        echo "1";
-    } else {
-        /* successful code is 2*/
-        echo "2";
-    }
-}
-
-function getUserId()
-{
-    $token = "";
-    $codeUpperAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    $maxUpper = strlen($codeUpperAlphabet);
-    $codeNumbers = "0123456789";
-    $maxNumber = strlen($codeNumbers);
-    for ($i = 0; $i < 3; $i++) {
-        $token .= $codeUpperAlphabet[rand(0, 25)];
-    }
-
-    for ($i = 0; $i < 3; $i++) {
-        $token .= $codeNumbers[rand(0, 9)];
-    }
-    for ($i = 0; $i < 2; $i++) {
-        $token .= $codeUpperAlphabet[rand(0, 25)];
-    }
-    for ($i = 0; $i < 2; $i++) {
-        $token .= $codeNumbers[rand(0, 9)];
-    }
-
-    return $token;
 }

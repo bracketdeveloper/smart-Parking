@@ -1,25 +1,4 @@
 <?php
-/* password and username email function */
-function emailUsernameAndPassword($username, $password, $toEmail)
-{
-    $subject = "Your Request for VUK Admin Credentials";
-    $body = "
-    Respected Sir!
-    We received a request for your admin credentials so the details are below 
-    Username: $username
-    Password: $password";
-
-    $headers = "Reply-To: VUK DEVELOPMENT SYSTEM <contact@bracketdeveloper.com>\r\n";
-    $headers .= "Return-Path: VUK DEVELOPMENT SYSTEM <contact@bracketdeveloper.com>\r\n";
-    $headers .= "From: VUK DEVELOPMENT SYSTEM <contact@bracketdeveloper.com>\r\n";
-    $headers .= "Organization: VUK DEVELOPMENT SYSTEM\r\n";
-    $headers .= "MIME-Version: 1.0\r\n";
-    $headers .= "Content-type: text/plain; charset=iso-8859-1\r\n";
-    $headers .= "X-Priority: 3\r\n";
-    $headers .= "X-Mailer: PHP" . phpversion() . "\r\n";
-
-    $result = mail($toEmail, $subject, $body, $headers);
-}
 
 /* get all staff members function*/
 function getAllStaffMembers($conn)
@@ -98,19 +77,6 @@ function getSpecificStaffMember($conn, $id)
         while ($row = $allStaffMembersQueryResult->fetch_assoc()) {
             $data[] = $row;
         }
-    }
-    return $data;
-}
-
-/* get admin details by id*/
-function getAdminDetailsByID($conn, $adminID)
-{
-    $adminDetailsQuery = "SELECT * FROM `admin` WHERE `admin_id` = '$adminID'";
-    $adminDetailsQueryResult = mysqli_query($conn, $adminDetailsQuery);
-    $data = array();
-    if (mysqli_num_rows($adminDetailsQueryResult) > 0) {
-        $row = mysqli_fetch_array($adminDetailsQueryResult, MYSQLI_ASSOC);
-        $data[] = $row;
     }
     return $data;
 }
@@ -285,37 +251,22 @@ function getTotalAlertStatusCars($conn){
     }
     return $data;
 }
-function sendPasswordAsEmail($email, $password, $name)
-{
-    $subject = "Smart Parking Pro Password Recover.";
-    $body = "
-    Dear $name! 
-    
-    We have received a request to reset the password for your account with Smart Parking Pro. 
-    
-    Following is your password:
-    
-    Password: $password
-    
-  
-    Please keep your login information secure and do not share it with anyone. 
-    If you have any issues logging in or have any questions, please don't hesitate to contact us.
-    
-    Best regards,
-    
-    Smart Parking Pro
-    
-    ";
 
-    $headers = "Reply-To: SmartParkingPro <smartparkingpro@gmail.com>\r\n";
-    $headers .= "Return-Path: SmartParkingPro <smartparkingpro@gmail.com>\r\n";
-    $headers .= "From: SmartParkingPro <smartparkingpro@gmail.com>\r\n";
-    $headers .= "Organization: SmartParkingPro\r\n";
-    $headers .= "MIME-Version: 1.0\r\n";
-    $headers .= "Content-type: text/plain; charset=iso-8859-1\r\n";
-    $headers .= "X-Priority: 3\r\n";
-    $headers .= "X-Mailer: PHP" . phpversion() . "\r\n";
+function removeLastEntryInCsv($path){
+// Read the CSV file into an array
+    $rows = array_map('str_getcsv', file($path));
 
-    mail($email, $subject, $body, $headers);
+// Remove the last entry
+    array_pop($rows);
+
+// Open the CSV file for writing
+    $file = fopen($path, 'w');
+
+// Write the modified array back to the CSV file
+    foreach ($rows as $row) {
+        fputcsv($file, $row);
+    }
+
+// Close the file
+    fclose($file);
 }
-

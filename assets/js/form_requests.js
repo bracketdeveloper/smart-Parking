@@ -874,10 +874,13 @@ $('body').off('click', '#btn-generate-range-date-report');
                     newTab.document.write('<!DOCTYPE html> <html> <head> <title>Report</title></head> <style> table { width: 100%; border-collapse: collapse; margin-top: 20px; } th, td { border: 1px solid #ddd; padding: 8px; text-align: left; } th { background-color: #f2f2f2; } </style> </head>');
                     newTab.document.write('<h1>Report between '+startDate +' and '+endDate+'</h1>');
                     newTab.document.write(tableHead);
+                    var totalRevenue = 0;
                     // Display the data in the new tab
                     for(let i=0; i<data.length; i++){
+                        totalRevenue += parseInt(data[i].parking_fare);
                         newTab.document.write('<tr><td>'+(i+1)+'</td><td>'+data[i].car_reg+'</td><td>'+data[i].parking_fare+'</td><td>'+data[i].time+'</td></tr>');
                     }
+                    newTab.document.write('<tr><th>&nbsp;</th><th>Total Revenue</th><th>'+totalRevenue+'</th></tr>')
                     var tableBottom = '</tbody></table>';
                     newTab.document.write(tableBottom);
 
@@ -935,9 +938,12 @@ $('body').off('click', '#btn-generate-specific-date-report');
                     newTab.document.write('<h1>Report of '+reportDate+'</h1>');
                     newTab.document.write(tableHead);
                     // Display the data in the new tab
+                    var totalRevenue = 0;
                     for(let i=0; i<data.length; i++){
+                    totalRevenue += parseInt(data[i].parking_fare);
                         newTab.document.write('<tr><td>'+(i+1)+'</td><td>'+data[i].car_reg+'</td><td>'+data[i].parking_fare+'</td><td>'+data[i].time+'</td></tr>');
                     }
+                    newTab.document.write('<tr><th>&nbsp;</th><th>Total Revenue</th><th>'+totalRevenue+'</th></tr>')
                     var tableBottom = '</tbody></table>';
                     newTab.document.write(tableBottom);
 
@@ -995,10 +1001,13 @@ $('body').off('click', '#btn-generate-specific-car-report');
                     newTab.document.write('<!DOCTYPE html> <html> <head> <title>Report</title></head> <style> table { width: 100%; border-collapse: collapse; margin-top: 20px; } th, td { border: 1px solid #ddd; padding: 8px; text-align: left; } th { background-color: #f2f2f2; } </style> </head>');
                     newTab.document.write('<h1>Report of '+carReg+'</h1>');
                     newTab.document.write(tableHead);
+                    var totalRevenue = 0;
                     // Display the data in the new tab
                     for(let i=0; i<data.length; i++){
+                        totalRevenue += parseInt(data[i].parking_fare);
                         newTab.document.write('<tr><td>'+(i+1)+'</td><td>'+data[i].car_reg+'</td><td>'+data[i].parking_fare+'</td><td>'+data[i].time+'</td></tr>');
                     }
+                    newTab.document.write('<tr><th>&nbsp;</th><th>Total Revenue</th><th>'+totalRevenue+'</th></tr>')
                     var tableBottom = '</tbody></table>';
                     newTab.document.write(tableBottom);
 
